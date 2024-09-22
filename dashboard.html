@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - YourStore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Link to Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+
+  <!-- Include Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <!-- (Same as in your `index.html` or main navigation bar) -->
+    <div class="logo">YourStore</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li class="dropdown">
+        <a href="#">Shop</a>
+        <ul class="dropdown-menu">
+          <li><a href="category.html">Electronics</a></li>
+          <!-- Add more categories if needed -->
+        </ul>
+      </li>
+      <li><a href="#">Deals</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="register.html">Register</a></li>
+    </ul>
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search products..." />
+      <div class="search-results" id="search-results"></div>
+    </div>
+    <!-- Cart Icon -->
+    <div class="cart">
+      <a href="#"><i class="fas fa-shopping-cart"></i></a>
+    </div>
+    <!-- Hamburger Menu Icon -->
+    <div class="hamburger">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+
+  <!-- Dashboard Section -->
+  <section class="dashboard-section">
+    <div class="dashboard-container">
+      <h1 id="greeting">Hello, <span id="userName">User</span>!</h1>
+      <div class="loyalty-points-container">
+        <div class="loyalty-points-display">
+          <h2>Loyalty Points</h2>
+          <div class="points-circle">
+            <span id="loyaltyPoints">0</span>
+          </div>
+          <button class="btn redeem-btn" id="redeemButton">Redeem Points</button>
+        </div>
+        <div class="points-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p>Level: <span id="userLevel">Bronze</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <!-- (Same footer content as in your `index.html`) -->
+    <p>&copy; 2023 YourStore. All rights reserved.</p>
+  </footer>
+
+  <!-- Link to external JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

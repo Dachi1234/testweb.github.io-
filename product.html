@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product - YourStore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Link to Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+
+  <!-- Include Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+        <div class="logo">YourStore</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Shop</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Clothing</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#">Electronics</a></li>
+                    <!-- Add more categories -->
+                </ul>
+            </li>
+            <li><a href="#">Deals</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="register.html">Register</a></li>
+        </ul>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search products..." />
+            <div class="search-results" id="search-results"></div>
+        </div>
+        <!-- Cart Icon -->
+        <div class="cart">
+            <a href="#"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+        <!-- Hamburger Menu Icon -->
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+
+  <!-- Product Detail Section -->
+  <section class="product-detail">
+    <div class="product-detail-container">
+      <div class="product-images">
+        <img id="productImage" src="hero1.jpg" alt="Product Name">
+      </div>
+      <div class="product-info">
+        <h1 id="productName">Product Name</h1>
+        <p class="price" id="productPrice">$0.00</p>
+        <p class="description" id="productDescription">
+          Product description goes here.
+        </p>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section class="reviews-section">
+    <h2>Customer Reviews</h2>
+    <div id="reviewsContainer">
+      <!-- Reviews will be displayed here -->
+    </div>
+    <h3>Write a Review</h3>
+    <form id="reviewForm">
+      <div class="form-group">
+        <label for="reviewerName">Your Name *</label>
+        <input type="text" id="reviewerName" required>
+      </div>
+      <div class="form-group">
+        <label for="reviewRating">Rating *</label>
+        <select id="reviewRating" required>
+          <option value="">Select Rating</option>
+          <option value="5">★★★★★</option>
+          <option value="4">★★★★☆</option>
+          <option value="3">★★★☆☆</option>
+          <option value="2">★★☆☆☆</option>
+          <option value="1">★☆☆☆☆</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="reviewText">Your Review *</label>
+        <textarea id="reviewText" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn submit-review">Submit Review</button>
+    </form>
+  </section>
+
+  <!-- Link to external JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - YourStore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Include Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+  <!-- Registration Section -->
+  <section class="register-section">
+    <div class="register-container">
+      <h2>Create an Account</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input type="text" id="firstName" required>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input type="text" id="lastName" required>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" required>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input type="password" id="password" required>
+          <small class="error-message"></small>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password *</label>
+          <input type="password" id="confirmPassword" required>
+          <small class="error-message"></small>
+        </div>
+        <button type="submit" class="btn register-btn">Register</button>
+      </form>
+      <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+  </section>
+
+  <!-- Link to external JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

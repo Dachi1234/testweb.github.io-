@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your E-commerce Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Link to Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- Swiper CSS for sliders -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+    />
+
+    <!-- Include Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap"
+      rel="stylesheet"
+    />
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">YourStore</div>
+    <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+            <a href="#">Shop</a>
+            <ul class="dropdown-menu">
+                <li><a href="category.html?category=clothing">Clothing</a></li>
+                <li><a href="category.html?category=accessories">Accessories</a></li>
+                <li><a href="category.html?category=electronics">Electronics</a></li>
+                <!-- Add more categories as needed -->
+            </ul>
+        </li>
+        <li><a href="#">Deals</a></li>
+        <li><a href="#">Contact</a></li>
+        <!-- Add Dashboard Link -->
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <!-- Keep Register Link -->
+        <li><a href="register.html">Register</a></li>
+    </ul>
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <!-- ... -->
+    </div>
+    <!-- Cart Icon -->
+    <div class="cart">
+        <!-- ... -->
+    </div>
+    <!-- Hamburger Menu Icon -->
+    <div class="hamburger">
+        <!-- ... -->
+    </div>
+</nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Elevate Your Style</h1>
+            <p>Discover unique products that define you.</p>
+            <a href="#" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Featured Products Carousel -->
+    <section class="featured-products">
+        <h2>Featured Products</h2>
+        <div class="swiper product-carousel">
+            <div class="swiper-wrapper">
+                <!-- Product Item 1 -->
+                <div class="swiper-slide product-item">
+                    <div class="product-item-inner">
+                        <img src="hero1.jpg"Stylish Sunglasses" />
+                        <div class="product-item-content">
+                            <h3>Stylish Sunglasses</h3>
+                            <p>$49.99</p>
+                            <a href="#" class="btn">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Item 2 -->
+                <div class="swiper-slide product-item">
+                    <div class="product-item-inner">
+                        <img src="hero1.jpg"Stylish Sunglasses" />
+                        <div class="product-item-content">
+                            <h3>Leather Backpack</h3>
+                            <p>$89.99</p>
+                            <a href="#" class="btn">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Item 3 -->
+                <div class="swiper-slide product-item">
+                    <div class="product-item-inner">
+                        <img src="hero1.jpg"Stylish Sunglasses" />
+                        <div class="product-item-content">
+                            <h3>Wireless Headphones</h3>
+                            <p>$129.99</p>
+                            <a href="#" class="btn">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Item 4 -->
+                <div class="swiper-slide product-item">
+                    <div class="product-item-inner">
+                        <img src="hero1.jpg"Stylish Sunglasses" />
+                        <div class="product-item-content">
+                            <h3>Smart Watch</h3>
+                            <p>$199.99</p>
+                            <a href="#" class="btn">Buy Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more product items as needed -->
+            </div>
+            <!-- Swiper Navigation Buttons -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <!-- Swiper Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>YourStore</h3>
+                <p>Your one-stop shop for the latest trends.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Deals</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Customer Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+            </div>
+        </div>
+        <p class="footer-bottom">&copy; 2024 YourStore. All rights reserved.</p>
+    </footer>
+
+    <!-- Link to external JavaScript -->
+    <script src="script.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+    <!-- Initialize Swiper -->
+    <script>
+        // Initialize Swiper for Featured Products
+        var productSwiper = new Swiper('.product-carousel', {
+            loop: true,
+            slidesPerView: 4,
+            spaceBetween: 20,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            // Responsive breakpoints
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                },
+                480: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 3,
+                },
+                1024: {
+                    slidesPerView: 4,
+                },
+            },
+        });
+    </script>
+</body>
+</html>

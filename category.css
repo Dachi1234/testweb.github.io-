@@ -1,0 +1,256 @@
+/* Category Page Styles */
+
+/* General Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+  }
+  
+  /* Navigation Bar */
+  /* Include your existing navbar styles here or link to your main CSS */
+  
+  /* Category Section */
+  .category-section {
+    padding: 60px 20px;
+  }
+  
+  .category-section h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .filter-toggle {
+    display: none;
+    background-color: #ff6f61;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .category-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  /* Filters Sidebar */
+  .filters {
+    flex: 1 1 200px;
+    margin-right: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+  }
+  
+  .filters h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-group {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+  }
+  
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .filter-header h4 {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+  }
+  
+  .toggle-filter {
+    font-size: 18px;
+    color: #333;
+    transition: transform 0.3s;
+  }
+  
+  .filter-content {
+    margin-top: 15px;
+  }
+  
+  .filter-content label {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  #priceValue {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+  
+  .clear-filters {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  
+  .clear-filters:hover {
+    background-color: #555;
+  }
+  
+  /* Collapsible Filter Content */
+  .filter-content {
+    display: none;
+  }
+  
+  .filter-group.active .filter-content {
+    display: block;
+  }
+  
+  .filter-group.active .toggle-filter {
+    transform: rotate(180deg);
+  }
+  
+  /* Products Grid */
+  .products-grid {
+    flex: 3 1 600px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  
+  .product-card {
+    width: calc(33.33% - 20px);
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .product-card h3 {
+    font-size: 20px;
+    margin: 15px 0 10px;
+    color: #333;
+  }
+  
+  .product-card p {
+    font-size: 18px;
+    color: #ff6f61;
+    margin-bottom: 15px;
+  }
+  
+  .product-card .btn {
+    padding: 10px 20px;
+    background-color: #ff6f61;
+    color: #fff;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .product-card .btn:hover {
+    background-color: #e55d50;
+  }
+  
+  /* Footer */
+  /* Include your existing footer styles here or link to your main CSS */
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .category-container {
+      flex-direction: row;
+    }
+  
+    .filters {
+      flex: 1 1 100%;
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  
+    .products-grid {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  
+    .product-card {
+      width: calc(50% - 20px);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .filter-toggle {
+      display: inline-block;
+    }
+  
+    .filters {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+      transition: left 0.3s;
+    }
+  
+    .filters.active {
+      left: 0;
+    }
+  
+    .category-container {
+      flex-direction: column;
+    }
+  
+    .products-grid {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  
+    .product-card {
+      width: calc(100% - 20px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-card h3 {
+      font-size: 18px;
+    }
+  
+    .product-card p {
+      font-size: 16px;
+    }
+  
+    .product-card .btn {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+  
