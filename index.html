@@ -29,41 +29,40 @@
 <body>
 
     <!-- Navigation Bar -->
-    <!-- Navigation Bar -->
-<nav class="navbar">
-    <div class="logo">YourStore</div>
-    <ul class="nav-links">
-        <li><a href="#">Home</a></li>
-        <li class="dropdown">
-            <a href="#">Shop</a>
-            <ul class="dropdown-menu">
-                <li><a href="category.html?category=clothing">Clothing</a></li>
-                <li><a href="category.html?category=accessories">Accessories</a></li>
-                <li><a href="category.html?category=electronics">Electronics</a></li>
-                <!-- Add more categories as needed -->
-            </ul>
-        </li>
-        <li><a href="#">Deals</a></li>
-        <li><a href="#">Contact</a></li>
-        <!-- Add Dashboard Link -->
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <!-- Keep Register Link -->
-        <li><a href="register.html">Register</a></li>
-    </ul>
-    <!-- Search Bar -->
-    <div class="search-bar">
-        <!-- ... -->
-    </div>
-    <!-- Cart Icon -->
-    <div class="cart">
-        <!-- ... -->
-    </div>
-    <!-- Hamburger Menu Icon -->
-    <div class="hamburger">
-        <!-- ... -->
-    </div>
-</nav>
-
+    <nav class="navbar">
+        <div class="logo"><a href="index.html">YourStore</a></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Shop</a>
+                <ul class="dropdown-menu">
+                    <li><a href="category.html?category=clothing">Clothing</a></li>
+                    <li><a href="category.html?category=accessories">Accessories</a></li>
+                    <li><a href="category.html?category=electronics">Electronics</a></li>
+                    <!-- Add more categories as needed -->
+                </ul>
+            </li>
+            <li><a href="#">Deals</a></li>
+            <li><a href="#">Contact</a></li>
+            <!-- Add Dashboard Link -->
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <!-- Keep Register Link -->
+            <li><a href="register.html">Register</a></li>
+        </ul>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search products...">
+            <div id="search-results"></div>
+        </div>
+        <!-- Cart Icon -->
+        <div class="cart">
+            <!-- ... -->
+        </div>
+        <!-- Hamburger Menu Icon -->
+        <div class="hamburger">
+            <!-- ... -->
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -74,56 +73,22 @@
         </div>
     </section>
 
+    <!-- Products Section -->
+    <section class="products-section">
+
+        <!-- Products Container -->
+        <div id="products-container" class="products-grid">
+            <!-- Products will be dynamically inserted here by script.js -->
+        </div>
+    </section>
+
     <!-- Featured Products Carousel -->
     <section class="featured-products">
         <h2>Featured Products</h2>
         <div class="swiper product-carousel">
             <div class="swiper-wrapper">
-                <!-- Product Item 1 -->
-                <div class="swiper-slide product-item">
-                    <div class="product-item-inner">
-                        <img src="hero1.jpg"Stylish Sunglasses" />
-                        <div class="product-item-content">
-                            <h3>Stylish Sunglasses</h3>
-                            <p>$49.99</p>
-                            <a href="#" class="btn">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Item 2 -->
-                <div class="swiper-slide product-item">
-                    <div class="product-item-inner">
-                        <img src="hero1.jpg"Stylish Sunglasses" />
-                        <div class="product-item-content">
-                            <h3>Leather Backpack</h3>
-                            <p>$89.99</p>
-                            <a href="#" class="btn">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Item 3 -->
-                <div class="swiper-slide product-item">
-                    <div class="product-item-inner">
-                        <img src="hero1.jpg"Stylish Sunglasses" />
-                        <div class="product-item-content">
-                            <h3>Wireless Headphones</h3>
-                            <p>$129.99</p>
-                            <a href="#" class="btn">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Item 4 -->
-                <div class="swiper-slide product-item">
-                    <div class="product-item-inner">
-                        <img src="hero1.jpg"Stylish Sunglasses" />
-                        <div class="product-item-content">
-                            <h3>Smart Watch</h3>
-                            <p>$199.99</p>
-                            <a href="#" class="btn">Buy Now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Add more product items as needed -->
+                <!-- Swiper slides will be dynamically inserted here by script.js if implemented -->
+                <!-- For now, you can keep the hardcoded slides or remove them -->
             </div>
             <!-- Swiper Navigation Buttons -->
             <div class="swiper-button-next"></div>
@@ -173,7 +138,7 @@
 
     <!-- Initialize Swiper -->
     <script>
-        // Initialize Swiper for Featured Products
+        // Initialize Swiper for Featured Products (Optional)
         var productSwiper = new Swiper('.product-carousel', {
             loop: true,
             slidesPerView: 4,
