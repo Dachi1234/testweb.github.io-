@@ -1,9 +1,9 @@
-require('dotenv').config(); // Load environment variables
+equire('dotenv').config(); // Load environment variables
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const Product = require('./Product'); // Corrected import path
+const Product = require('./Product'); // Make sure this path is correct
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -95,3 +95,10 @@ app.delete('/products/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
