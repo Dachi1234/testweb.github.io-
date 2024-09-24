@@ -39,6 +39,52 @@ if (backToTop) {
   });
 }
 
+
+
+
+// Initialize Swiper for featured products
+function initializeSwiper() {
+  if (window.productSwiper) {
+    window.productSwiper.destroy();
+  }
+  window.productSwiper = new Swiper('.product-carousel', {
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 4 },
+    },
+  });
+}
+
+// Fetch products from the backend API
+async function fetchProducts() {
+  try {
+    const response = await fetch('https://testweb-github-io.onrender.com/products');
+    const data = await response.json();
+    products = data;
+    productNames = products.map(product => product.name);
+
+    displayProducts(products);
+    displayFeaturedProducts(products);
+    initializeSearchBar();
+    initializeCategoryPage();
+    initializeProductPage();
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+}
+
 // Function to display all products
 function displayProducts(productsToDisplay) {
   const container = document.getElementById('products-container');
@@ -86,49 +132,6 @@ function displayFeaturedProducts(products) {
   });
 
   initializeSwiper();
-}
-
-// Initialize Swiper for featured products
-function initializeSwiper() {
-  if (window.productSwiper) {
-    window.productSwiper.destroy();
-  }
-  window.productSwiper = new Swiper('.product-carousel', {
-    loop: true,
-    slidesPerView: 1,
-    spaceBetween: 20,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    breakpoints: {
-      640: { slidesPerView: 2 },
-      768: { slidesPerView: 3 },
-      1024: { slidesPerView: 4 },
-    },
-  });
-}
-
-// Fetch products from the backend API
-async function fetchProducts() {
-  try {
-    const response = await fetch('https://testweb-github-io.onrender.com/products');
-    const data = await response.json();
-    products = data;
-    productNames = products.map(product => product.name);
-
-    displayProducts(products);
-    displayFeaturedProducts(products);
-    initializeSearchBar();
-    initializeCategoryPage();
-    initializeProductPage();
-  } catch (error) {
-    console.error('Error fetching products:', error);
-  }
 }
 
 
