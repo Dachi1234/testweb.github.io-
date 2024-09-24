@@ -34,8 +34,8 @@ app.get('/', (req, res) => {
   res.send('Server is running');
 });
 
-// POST /products - Add a new product
-app.post('/products', async (req, res) => {
+// POST products - Add a new product
+app.post('products', async (req, res) => {
   try {
     const newProduct = new Product(req.body); // Create a new product instance
     const savedProduct = await newProduct.save(); // Save the product to the database
@@ -45,8 +45,8 @@ app.post('/products', async (req, res) => {
   }
 });
 
-// GET /products - Retrieve all products
-app.get('/products', async (req, res) => {
+// GET products - Retrieve all products
+app.get('products', async (req, res) => {
   try {
     const products = await Product.find(); // Fetch all products from MongoDB
     res.json(products); // Send the products as JSON
@@ -55,8 +55,8 @@ app.get('/products', async (req, res) => {
   }
 });
 
-// GET /products/:id - Retrieve a product by its ID
-app.get('/products/:id', async (req, res) => {
+// GET products/:id - Retrieve a product by its ID
+app.get('products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id); // Find product by ID
     if (!product) {
@@ -68,8 +68,8 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-// PUT /products/:id - Update a product by its ID
-app.put('/products/:id', async (req, res) => {
+// PUT products/:id - Update a product by its ID
+app.put('products/:id', async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -85,8 +85,8 @@ app.put('/products/:id', async (req, res) => {
   }
 });
 
-// DELETE /products/:id - Delete a product by its ID
-app.delete('/products/:id', async (req, res) => {
+// DELETE products/:id - Delete a product by its ID
+app.delete('products/:id', async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
