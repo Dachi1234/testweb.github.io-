@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Require cors package
 const app = express();
-const Product = require('./models/Product');
+const Product = require('Product');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
