@@ -83,20 +83,19 @@
     </section>
 
     <!-- Featured Products Carousel -->
-    <section class="featured-products">
-        <h2>Featured Products</h2>
-        <div class="swiper product-carousel">
-            <div class="swiper-wrapper">
-                <!-- Swiper slides will be dynamically inserted here by script.js if implemented -->
-                <!-- For now, you can keep the hardcoded slides or remove them -->
-            </div>
-            <!-- Swiper Navigation Buttons -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <!-- Swiper Pagination -->
-            <div class="swiper-pagination"></div>
+<section class="featured-products">
+    <h2>Featured Products</h2>
+    <div class="swiper product-carousel">
+        <div class="swiper-wrapper" id="featured-products-container">
+            <!-- Product cards will be dynamically inserted here by script.js -->
         </div>
-    </section>
+        <!-- Swiper Navigation Buttons -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <!-- Swiper Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
@@ -137,36 +136,33 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
     <!-- Initialize Swiper -->
-    <script>
-        // Initialize Swiper for Featured Products (Optional)
-        var productSwiper = new Swiper('.product-carousel', {
-            loop: true,
-            slidesPerView: 4,
-            spaceBetween: 20,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+   <script>
+    // Initialize Swiper for Featured Products
+    var productSwiper = new Swiper('.product-carousel', {
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 20,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        // Responsive breakpoints
+        breakpoints: {
+            640: {
+                slidesPerView: 2,
             },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
+            768: {
+                slidesPerView: 3,
             },
-            // Responsive breakpoints
-            breakpoints: {
-                320: {
-                    slidesPerView: 1,
-                },
-                480: {
-                    slidesPerView: 2,
-                },
-                768: {
-                    slidesPerView: 3,
-                },
-                1024: {
-                    slidesPerView: 4,
-                },
+            1024: {
+                slidesPerView: 4,
             },
-        });
-    </script>
+        },
+    });
+</script>
 </body>
 </html>
