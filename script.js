@@ -70,7 +70,7 @@ function displayProducts(productsToDisplay) {
 // Fetch products from the backend API
 async function fetchProducts() {
   try {
-    const response = await fetch('http://localhost:5000/products');
+    const response = await fetch('https://testweb-github-io.onrender.com/');
     const data = await response.json();
     products = data; // Assign fetched data to products
     productNames = products.map(product => product.name); // Update productNames
