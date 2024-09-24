@@ -1,13 +1,15 @@
-// Declare products and productNames globally
+// Global variables
 let products = [];
 let productNames = [];
 
-// Hamburger Menu Toggle
+// UI Elements
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
 const dropdownLink = document.querySelector('.nav-links .dropdown > a');
 const dropdownMenu = document.querySelector('.nav-links .dropdown-menu');
+const backToTop = document.querySelector('.back-to-top');
 
+// Hamburger Menu Toggle
 if (hamburger) {
   hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');
@@ -26,15 +28,9 @@ if (dropdownLink) {
 }
 
 // Back to Top Button
-const backToTop = document.querySelector('.back-to-top');
-
 if (backToTop) {
   window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-      backToTop.style.display = 'block';
-    } else {
-      backToTop.style.display = 'none';
-    }
+    backToTop.style.display = window.pageYOffset > 300 ? 'block' : 'none';
   });
 
   backToTop.addEventListener('click', (e) => {
@@ -43,27 +39,77 @@ if (backToTop) {
   });
 }
 
-// Function to display products
+// Function to display all products
 function displayProducts(productsToDisplay) {
   const container = document.getElementById('products-container');
-  if (!container) return; // Exit if container is not present
-  container.innerHTML = ''; // Clear existing content
-
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
   productsToDisplay.forEach(product => {
     const productDiv = document.createElement('div');
     productDiv.className = 'product-item';
-
     productDiv.innerHTML = `
-      <img src="${product.image}" alt="${product.name}" />
+      <img src="${product.image || 'placeholder-image.jpg'}" alt="${product.name}" />
       <div class="product-item-content">
         <h3>${product.name}</h3>
         <p>$${product.price.toFixed(2)}</p>
-        <p>${product.description}</p>
+        <p>${product.description ? product.description.slice(0, 100) + '...' : 'No description available'}</p>
         <a href="product.html?id=${product._id}" class="btn">View Details</a>
       </div>
     `;
-
     container.appendChild(productDiv);
+  });
+}
+
+// Function to display featured products
+function displayFeaturedProducts(products) {
+  const container = document.getElementById('featured-products-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+  const featuredProducts = products.slice(0, 8);
+
+  featuredProducts.forEach(product => {
+    const productCard = document.createElement('div');
+    productCard.className = 'swiper-slide product-card';
+    productCard.innerHTML = `
+      <img src="${product.image || 'placeholder-image.jpg'}" alt="${product.name}">
+      <div class="product-card-content">
+        <h3>${product.name}</h3>
+        <p>${product.description ? product.description.slice(0, 50) + '...' : 'No description available'}</p>
+        <div class="price">$${product.price.toFixed(2)}</div>
+        <a href="product.html?id=${product._id}" class="btn">View Details</a>
+      </div>
+    `;
+    container.appendChild(productCard);
+  });
+
+  initializeSwiper();
+}
+
+// Initialize Swiper for featured products
+function initializeSwiper() {
+  if (window.productSwiper) {
+    window.productSwiper.destroy();
+  }
+  window.productSwiper = new Swiper('.product-carousel', {
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 4 },
+    },
   });
 }
 
@@ -72,18 +118,19 @@ async function fetchProducts() {
   try {
     const response = await fetch('https://testweb-github-io.onrender.com/products');
     const data = await response.json();
-    products = data; // Assign fetched data to products
-    productNames = products.map(product => product.name); // Update productNames
+    products = data;
+    productNames = products.map(product => product.name);
 
-    // Initialize functionalities that depend on products
+    displayProducts(products);
+    displayFeaturedProducts(products);
     initializeSearchBar();
     initializeCategoryPage();
     initializeProductPage();
-
   } catch (error) {
     console.error('Error fetching products:', error);
   }
 }
+
 
 // Initialize Search Bar Functionality
 function initializeSearchBar() {
@@ -95,8 +142,8 @@ function initializeSearchBar() {
       const query = searchInput.value.toLowerCase();
       searchResults.innerHTML = '';
       if (query) {
-        const matches = productNames.filter(productName =>
-          productName.toLowerCase().includes(query)
+        const matches = productNames.filter(name => 
+          name.toLowerCase().includes(query)
         );
         if (matches.length > 0) {
           matches.forEach(match => {
@@ -104,12 +151,8 @@ function initializeSearchBar() {
             div.textContent = match;
             div.addEventListener('click', () => {
               searchInput.value = match;
-              searchResults.innerHTML = '';
               searchResults.style.display = 'none';
-              // Optionally redirect to the product page
-              const matchedProduct = products.find(
-                product => product.name === match
-              );
+              const matchedProduct = products.find(product => product.name === match);
               if (matchedProduct) {
                 window.location.href = `product.html?id=${matchedProduct._id}`;
               }
@@ -127,10 +170,7 @@ function initializeSearchBar() {
 
     // Hide search results when clicking outside
     document.addEventListener('click', (e) => {
-      if (
-        !searchInput.contains(e.target) &&
-        !searchResults.contains(e.target)
-      ) {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
         searchResults.style.display = 'none';
       }
     });
@@ -139,35 +179,24 @@ function initializeSearchBar() {
 
 // Initialize Category Page Functionality
 function initializeCategoryPage() {
-  // Check if we are on the category page
   if (document.getElementById('productsGrid')) {
-    // Get DOM elements
     const productsGrid = document.getElementById('productsGrid');
     const priceRange = document.getElementById('priceRange');
     const priceValue = document.getElementById('priceValue');
     const brandFilters = document.querySelectorAll('input[name="brand"]');
     const colorFilters = document.querySelectorAll('input[name="color"]');
 
-    // Display all products initially
-    let filteredProducts = products; // Display all products or filter by category if needed
+    let filteredProducts = products;
     displayProducts(filteredProducts);
 
-    // Update price range display
     priceRange.addEventListener('input', () => {
       priceValue.textContent = `$0 - $${priceRange.value}`;
       applyFilters();
     });
 
-    // Add event listeners to filters
-    brandFilters.forEach(filter => {
-      filter.addEventListener('change', applyFilters);
-    });
+    brandFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+    colorFilters.forEach(filter => filter.addEventListener('change', applyFilters));
 
-    colorFilters.forEach(filter => {
-      filter.addEventListener('change', applyFilters);
-    });
-
-    // Filter function
     function applyFilters() {
       const selectedBrands = Array.from(brandFilters)
         .filter(checkbox => checkbox.checked)
@@ -181,10 +210,8 @@ function initializeCategoryPage() {
 
       filteredProducts = products.filter(product => {
         return (
-          (selectedBrands.length === 0 ||
-            selectedBrands.includes(product.brand)) &&
-          (selectedColors.length === 0 ||
-            selectedColors.includes(product.color)) &&
+          (selectedBrands.length === 0 || selectedBrands.includes(product.brand)) &&
+          (selectedColors.length === 0 || selectedColors.includes(product.color)) &&
           product.price <= maxPrice
         );
       });
@@ -194,100 +221,59 @@ function initializeCategoryPage() {
   }
 }
 
+
 // Initialize Product Page Functionality
 function initializeProductPage() {
-  // Check if we are on the product page
   if (document.getElementById('productName')) {
-    // Get product ID from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id'); // Assuming the ID is a string
-
-    // Find the product
+    const productId = urlParams.get('id');
     const product = products.find(p => p._id === productId);
 
     if (product) {
-      // Display product details
       document.getElementById('productName').textContent = product.name;
       document.getElementById('productPrice').textContent = `$${product.price.toFixed(2)}`;
       document.getElementById('productDescription').textContent = product.description || 'No description available.';
       document.getElementById('productImage').src = product.image || 'placeholder.jpg';
     }
 
-    // Mock reviews data
     let reviews = [
-      {
-        name: 'John Doe',
-        rating: 5,
-        text: 'Great product! Highly recommend.',
-      },
-      {
-        name: 'Jane Smith',
-        rating: 4,
-        text: 'Good quality, but a bit expensive.',
-      },
+      { name: 'John Doe', rating: 5, text: 'Great product! Highly recommend.' },
+      { name: 'Jane Smith', rating: 4, text: 'Good quality, but a bit expensive.' },
     ];
 
-    // Function to display reviews
     function displayReviews() {
       const reviewsContainer = document.getElementById('reviewsContainer');
-      reviewsContainer.innerHTML = '';
-
-      if (reviews.length === 0) {
-        reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
-        return;
-      }
+      reviewsContainer.innerHTML = reviews.length === 0 ? '<p>No reviews yet.</p>' : '';
 
       reviews.forEach(review => {
         const reviewDiv = document.createElement('div');
         reviewDiv.classList.add('review');
-
-        const stars =
-          '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
         reviewDiv.innerHTML = `
           <p class="reviewer-name">${review.name}</p>
           <p class="review-rating">${stars}</p>
           <p class="review-text">${review.text}</p>
         `;
-
         reviewsContainer.appendChild(reviewDiv);
       });
     }
 
-    // Handle form submission
     const reviewForm = document.getElementById('reviewForm');
-
     reviewForm.addEventListener('submit', function (e) {
       e.preventDefault();
-
       const name = document.getElementById('reviewerName').value;
-      const rating = parseInt(
-        document.getElementById('reviewRating').value
-      );
+      const rating = parseInt(document.getElementById('reviewRating').value);
       const text = document.getElementById('reviewText').value;
-
-      // Add new review to the array
-      reviews.unshift({
-        name: name,
-        rating: rating,
-        text: text,
-      });
-
-      // Reset the form
+      reviews.unshift({ name, rating, text });
       reviewForm.reset();
-
-      // Update the reviews display
       displayReviews();
     });
 
-    // Initial display of reviews
     displayReviews();
   }
 }
 
 // Dashboard Page Functionality
-
-// Sample User Data (Replace with actual user data as needed)
 let currentUser = {
   firstName: 'Alice',
   lastName: 'Johnson',
@@ -295,20 +281,16 @@ let currentUser = {
   loyaltyPoints: 120,
 };
 
-// Check if we are on the dashboard page
 if (document.querySelector('.dashboard-section')) {
-  // Elements
   const userNameSpan = document.getElementById('userName');
   const loyaltyPointsSpan = document.getElementById('loyaltyPoints');
   const progressFill = document.getElementById('progressFill');
   const userLevelSpan = document.getElementById('userLevel');
   const redeemButton = document.getElementById('redeemButton');
 
-  // Update User Info
   userNameSpan.textContent = currentUser.firstName;
   loyaltyPointsSpan.textContent = currentUser.loyaltyPoints;
 
-  // Update the dashboard display
   function updateDashboard() {
     loyaltyPointsSpan.textContent = currentUser.loyaltyPoints;
     const progressPercentage = (currentUser.loyaltyPoints % 250) / 250 * 100;
@@ -316,7 +298,6 @@ if (document.querySelector('.dashboard-section')) {
     userLevelSpan.textContent = getUserLevel(currentUser.loyaltyPoints);
   }
 
-  // Determine User Level based on loyalty points
   function getUserLevel(points) {
     if (points >= 1000) return 'Platinum';
     if (points >= 500) return 'Gold';
@@ -324,12 +305,10 @@ if (document.querySelector('.dashboard-section')) {
     return 'Bronze';
   }
 
-  // Initial dashboard update
   updateDashboard();
 
-  // Redeem Points Functionality
   redeemButton.addEventListener('click', () => {
-    const pointsToRedeem = 100; // Set the number of points required to redeem
+    const pointsToRedeem = 100;
     if (currentUser.loyaltyPoints >= pointsToRedeem) {
       currentUser.loyaltyPoints -= pointsToRedeem;
       alert(`You have redeemed ${pointsToRedeem} points for a discount!`);
@@ -338,108 +317,70 @@ if (document.querySelector('.dashboard-section')) {
       alert('You need at least 100 points to redeem.');
     }
   });
-
-  // Expose functions to global scope if needed
-  window.earnPoints = earnPoints;
 }
 
 // Registration Form Validation
-
-// Check if we are on the register page
 if (document.getElementById('registerForm')) {
   const registerForm = document.getElementById('registerForm');
-  const firstName = document.getElementById('firstName');
-  const lastName = document.getElementById('lastName');
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
-  const confirmPassword = document.getElementById('confirmPassword');
+  const formInputs = {
+    firstName: document.getElementById('firstName'),
+    lastName: document.getElementById('lastName'),
+    email: document.getElementById('email'),
+    password: document.getElementById('password'),
+    confirmPassword: document.getElementById('confirmPassword')
+  };
 
   registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    validateForm();
-  });
-
-  // Real-time validation
-  firstName.addEventListener('input', validateFirstName);
-  lastName.addEventListener('input', validateLastName);
-  email.addEventListener('input', validateEmail);
-  password.addEventListener('input', validatePassword);
-  confirmPassword.addEventListener('input', validateConfirmPassword);
-
-  function validateForm() {
-    let isValid = true;
-
-    if (!validateFirstName()) isValid = false;
-    if (!validateLastName()) isValid = false;
-    if (!validateEmail()) isValid = false;
-    if (!validatePassword()) isValid = false;
-    if (!validateConfirmPassword()) isValid = false;
-
-    if (isValid) {
-      // Submit the form or perform further actions
+    if (validateForm()) {
       alert('Registration successful!');
       registerForm.reset();
     }
+  });
+
+  Object.values(formInputs).forEach(input => {
+    input.addEventListener('input', () => validateInput(input));
+  });
+
+  function validateForm() {
+    return Object.values(formInputs).every(validateInput);
   }
 
-  function validateFirstName() {
-    if (firstName.value.trim() === '') {
-      showError(firstName, 'First name is required.');
-      return false;
-    } else {
-      showSuccess(firstName);
-      return true;
-    }
-  }
 
-  function validateLastName() {
-    if (lastName.value.trim() === '') {
-      showError(lastName, 'Last name is required.');
-      return false;
-    } else {
-      showSuccess(lastName);
-      return true;
-    }
-  }
+// ... (continued from previous part)
 
-  function validateEmail() {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email.value.trim() === '') {
-      showError(email, 'Email is required.');
-      return false;
-    } else if (!emailRegex.test(email.value.trim())) {
-      showError(email, 'Please enter a valid email.');
-      return false;
-    } else {
-      showSuccess(email);
-      return true;
-    }
-  }
+  function validateInput(input) {
+    const value = input.value.trim();
+    let isValid = true;
+    let errorMessage = '';
 
-  function validatePassword() {
-    if (password.value.trim() === '') {
-      showError(password, 'Password is required.');
-      return false;
-    } else if (password.value.trim().length < 6) {
-      showError(password, 'Password must be at least 6 characters.');
-      return false;
-    } else {
-      showSuccess(password);
-      return true;
+    switch (input.id) {
+      case 'firstName':
+      case 'lastName':
+        isValid = value !== '';
+        errorMessage = `${input.id === 'firstName' ? 'First' : 'Last'} name is required.`;
+        break;
+      case 'email':
+        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        errorMessage = 'Please enter a valid email address.';
+        break;
+      case 'password':
+        isValid = value.length >= 6;
+        errorMessage = 'Password must be at least 6 characters long.';
+        break;
+      case 'confirmPassword':
+        isValid = value === formInputs.password.value;
+        errorMessage = 'Passwords do not match.';
+        break;
     }
-  }
 
-  function validateConfirmPassword() {
-    if (confirmPassword.value.trim() === '') {
-      showError(confirmPassword, 'Please confirm your password.');
-      return false;
-    } else if (confirmPassword.value.trim() !== password.value.trim()) {
-      showError(confirmPassword, 'Passwords do not match.');
-      return false;
+    if (isValid) {
+      showSuccess(input);
     } else {
-      showSuccess(confirmPassword);
-      return true;
+      showError(input, errorMessage);
     }
+
+    return isValid;
   }
 
   function showError(input, message) {
@@ -459,5 +400,46 @@ if (document.getElementById('registerForm')) {
   }
 }
 
-// Call fetchProducts when the page loads
-window.onload = fetchProducts;
+// Initialize the page
+window.addEventListener('DOMContentLoaded', () => {
+  fetchProducts();
+  
+  // Additional initializations can be added here
+  initializeBackToTopButton();
+});
+
+// Back to Top Button Functionality
+function initializeBackToTopButton() {
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTop.style.display = 'block';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+
+    backToTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+}
+
+// You can add any additional global functions or initializations here
+
+// Example of a utility function that could be useful across the site
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}
+
+// Example of a function to handle API errors
+function handleApiError(error) {
+  console.error('API Error:', error);
+  // You could add more sophisticated error handling here, such as displaying a message to the user
+  alert('An error occurred. Please try again later.');
+}
