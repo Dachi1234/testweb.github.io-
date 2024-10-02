@@ -9,8 +9,6 @@ if (document.getElementById('productsGrid')) {
   const productsGrid = document.getElementById('productsGrid');
   const priceRange = document.getElementById('priceRange');
   const priceValue = document.getElementById('priceValue');
-  let brandFilters = []; // Will be initialized after generating filters
-  let colorFilters = []; // Will be initialized after generating filters
   const filterGroups = document.querySelectorAll('.filter-group');
   const filterToggleButtons = document.querySelectorAll('.filter-header');
   const clearFiltersButton = document.querySelector('.clear-filters');
@@ -93,7 +91,13 @@ if (document.getElementById('productsGrid')) {
     brandFilterContainer.innerHTML = '';
     brands.forEach(brand => {
       const label = document.createElement('label');
-      label.innerHTML = `<input type="checkbox" name="brand" value="${brand}"> ${brand}`;
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = 'brand';
+      checkbox.value = brand;
+      checkbox.addEventListener('change', applyFilters); // Attach event listener
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(` ${brand}`));
       brandFilterContainer.appendChild(label);
     });
 
@@ -102,16 +106,15 @@ if (document.getElementById('productsGrid')) {
     colorFilterContainer.innerHTML = '';
     colors.forEach(color => {
       const label = document.createElement('label');
-      label.innerHTML = `<input type="checkbox" name="color" value="${color}"> ${color}`;
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = 'color';
+      checkbox.value = color;
+      checkbox.addEventListener('change', applyFilters); // Attach event listener
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(` ${color}`));
       colorFilterContainer.appendChild(label);
     });
-
-    // Reattach event listeners to the new checkboxes
-    brandFilters = document.querySelectorAll('input[name="brand"]');
-    colorFilters = document.querySelectorAll('input[name="color"]');
-
-    brandFilters.forEach(filter => filter.addEventListener('change', applyFilters));
-    colorFilters.forEach(filter => filter.addEventListener('change', applyFilters));
   }
 
   // Update price range display and apply filters
@@ -127,13 +130,15 @@ if (document.getElementById('productsGrid')) {
     priceValue.textContent = `$0 - $${priceRange.value}`;
 
     // Uncheck all brand filters
-    brandFilters.forEach(filter => {
-      filter.checked = false;
+    const brandCheckboxes = document.querySelectorAll('input[name="brand"]');
+    brandCheckboxes.forEach(checkbox => {
+      checkbox.checked = false;
     });
 
     // Uncheck all color filters
-    colorFilters.forEach(filter => {
-      filter.checked = false;
+    const colorCheckboxes = document.querySelectorAll('input[name="color"]');
+    colorCheckboxes.forEach(checkbox => {
+      checkbox.checked = false;
     });
 
     applyFilters();
@@ -141,13 +146,11 @@ if (document.getElementById('productsGrid')) {
 
   // Filter function
   function applyFilters() {
-    const selectedBrands = Array.from(brandFilters)
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value);
+    const brandFilters = document.querySelectorAll('input[name="brand"]:checked');
+    const colorFilters = document.querySelectorAll('input[name="color"]:checked');
 
-    const selectedColors = Array.from(colorFilters)
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value);
+    const selectedBrands = Array.from(brandFilters).map(checkbox => checkbox.value);
+    const selectedColors = Array.from(colorFilters).map(checkbox => checkbox.value);
 
     const maxPrice = parseFloat(priceRange.value);
 
