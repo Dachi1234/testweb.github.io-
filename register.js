@@ -1,3 +1,5 @@
+// register.js
+
 document.getElementById('registrationForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -8,8 +10,8 @@ document.getElementById('registrationForm').addEventListener('submit', async (e)
 
   try {
     // Send registration data to the backend
-    const response = await fetch('/register', {
-      method: 'POST', // Ensure this is 'POST'
+    const response = await fetch('https://testweb-github-io.onrender.com/register', {
+      method: 'POST', // Use the full backend URL
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
     });
