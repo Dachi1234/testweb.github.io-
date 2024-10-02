@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
 const Product = require('./Product'); // Make sure this path is correct
+const cartRoutes = require('./cartRoutes'); // Adjust the path if necessary
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -12,6 +14,7 @@ app.use(express.json());
 // Use CORS middleware
 app.use(cors());
 
+app.use('/cart', cartRoutes);
 // Securely load your MongoDB URI from environment variables
 const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://dchperadze:iuRiYqYBf2v8gzde@cluster0.h10zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
@@ -192,3 +195,125 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+// server.js
+
+// ... existing code ...
+
+// Ensure express.json() middleware is included to parse JSON request bodies
+app.use(express.json());
+
+// Middleware to check authentication (simplified)
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const userId = req.headers['x-user-id'];
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Authentication Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Cart routes
+
+// Add item to cart
+app.post('/cart', isAuthenticated, async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    // Validate input
+    if (!productId || !quantity) {
+      return res.status(400).json({ error: 'Product ID and quantity are required' });
+    }
+
+    // Check if product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check if product already exists in cart
+    const cartItemIndex = req.user.cart.findIndex((item) => item.productId.equals(productId));
+    if (cartItemIndex > -1) {
+      // Update quantity
+      req.user.cart[cartItemIndex].quantity += quantity;
+    } else {
+      // Add new item
+      req.user.cart.push({ productId, quantity });
+    }
+
+    await req.user.save();
+    res.json({ message: 'Item added to cart' });
+  } catch (err) {
+    console.error('Error adding to cart:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// View cart items
+app.get('/cart', isAuthenticated, async (req, res) => {
+  try {
+    await req.user.populate('cart.productId');
+    res.json(req.user.cart);
+  } catch (err) {
+    console.error('Error fetching cart:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update cart item quantity
+app.put('/cart', isAuthenticated, async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    if (!productId || quantity == null) {
+      return res.status(400).json({ error: 'Product ID and quantity are required' });
+    }
+
+    const cartItem = req.user.cart.find((item) => item.productId.equals(productId));
+    if (cartItem) {
+      cartItem.quantity = quantity;
+      await req.user.save();
+      res.json({ message: 'Cart updated' });
+    } else {
+      res.status(404).json({ error: 'Item not found in cart' });
+    }
+  } catch (err) {
+    console.error('Error updating cart:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Remove item from cart
+app.delete('/cart', isAuthenticated, async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({ error: 'Product ID is required' });
+    }
+
+    const cartItemIndex = req.user.cart.findIndex((item) => item.productId.equals(productId));
+    if (cartItemIndex > -1) {
+      req.user.cart.splice(cartItemIndex, 1);
+      await req.user.save();
+      res.json({ message: 'Item removed from cart' });
+    } else {
+      res.status(404).json({ error: 'Item not found in cart' });
+    }
+  } catch (err) {
+    console.error('Error removing from cart:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ... rest of your server code ...
