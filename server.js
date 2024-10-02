@@ -44,10 +44,14 @@ app.post('/products', async (req, res) => {
   }
 });
 
-// GET /products - Retrieve all products
 app.get('/products', async (req, res) => {
   try {
-    const products = await Product.find();
+    const filter = {};
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+    // You can add more filters here (e.g., brand, price range)
+    const products = await Product.find(filter);
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
