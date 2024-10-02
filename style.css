@@ -642,6 +642,7 @@ footer {
 /* Category Section */
 .category-section {
   padding: 60px 20px;
+  margin-bottom: 60px; /* Add bottom margin if needed */
 }
 
 .category-section h2 {
