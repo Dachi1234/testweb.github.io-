@@ -1365,4 +1365,30 @@ footer {
       padding: 12px;
     }
   }
+
+/* Styles for the rating stars */
+.product-rating {
+  margin-top: 20px;
+}
+
+#rating-display {
+  font-size: 24px;
+  color: #FFD700; /* Gold color for stars */
+}
+
+#rating-input {
+  margin-top: 10px;
+}
+
+#rating-input .star {
+  font-size: 30px;
+  color: #ccc; /* Grey color for unselected stars */
+  cursor: pointer;
+}
+
+#rating-input .star:hover,
+#rating-input .star:hover ~ .star {
+  color: #FFD700;
+}
+
   
