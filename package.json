@@ -10,12 +10,13 @@
   "author": "",
   "license": "ISC",
   "description": "Backend server for YourStore e-commerce application",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "mongoose": "^8.6.3"
-  },
+ "dependencies": {
+  "express": "^4.21.0",
+  "mongoose": "^8.6.3",
+  "bcrypt": "^5.1.0",
+  "cors": "^2.8.5",
+  "dotenv": "^16.4.5"
+},
   "engines": {
     "node": ">=14.0.0"
   }
