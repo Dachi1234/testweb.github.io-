@@ -1,109 +1,162 @@
+<!-- product.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Product - YourStore</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Link to external CSS -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Link to Font Awesome for icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
-
-  <!-- Include Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap"
-    rel="stylesheet"
-  />
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include any additional CSS files -->
 </head>
 <body>
-      <!-- Navigation Bar -->
-      <nav class="navbar">
-        <div class="logo">YourStore</div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li class="dropdown">
-                <a href="#">Shop</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Clothing</a></li>
-                    <li><a href="#">Accessories</a></li>
-                    <li><a href="#">Electronics</a></li>
-                    <!-- Add more categories -->
-                </ul>
-            </li>
-            <li><a href="#">Deals</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="register.html">Register</a></li>
+    <!-- Navbar -->
+    <nav>
+        <!-- Navbar content -->
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="login.html">Login</a></li>
+            <!-- Add more links as needed -->
         </ul>
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search products..." />
-            <div class="search-results" id="search-results"></div>
-        </div>
-        <!-- Cart Icon -->
-        <div class="cart">
-            <a href="#"><i class="fas fa-shopping-cart"></i></a>
-        </div>
-        <!-- Hamburger Menu Icon -->
-        <div class="hamburger">
-            <i class="fas fa-bars"></i>
-        </div>
     </nav>
 
+    <!-- Product Details Section -->
+    <div class="product-details">
+        <!-- Product Information -->
+        <h1 id="product-name">Product Name</h1>
+        <img id="product-image" src="placeholder.jpg" alt="Product Image">
+        <p id="product-description">Product description goes here.</p>
+        <p id="product-price">$0.00</p>
 
-  <!-- Product Detail Section -->
-  <section class="product-detail">
-    <div class="product-detail-container">
-      <div class="product-images">
-        <img id="productImage" src="hero1.jpg" alt="Product Name">
-      </div>
-      <div class="product-info">
-        <h1 id="productName">Product Name</h1>
-        <p class="price" id="productPrice">$0.00</p>
-        <p class="description" id="productDescription">
-          Product description goes here.
-        </p>
-        <button class="btn add-to-cart">Add to Cart</button>
-      </div>
+        <!-- Rating System -->
+        <div class="product-rating">
+            <h3>Rating:</h3>
+            <div id="rating-display">
+                <!-- Stars will be displayed here -->
+            </div>
+            <div id="rating-input">
+                <h4>Rate this product:</h4>
+                <span class="star" data-value="1">&#9734;</span>
+                <span class="star" data-value="2">&#9734;</span>
+                <span class="star" data-value="3">&#9734;</span>
+                <span class="star" data-value="4">&#9734;</span>
+                <span class="star" data-value="5">&#9734;</span>
+            </div>
+        </div>
+
+        <!-- Add to Cart Button -->
+        <button id="addToCartButton">Add to Cart</button>
     </div>
-  </section>
 
-  <!-- Reviews Section -->
-  <section class="reviews-section">
-    <h2>Customer Reviews</h2>
-    <div id="reviewsContainer">
-      <!-- Reviews will be displayed here -->
-    </div>
-    <h3>Write a Review</h3>
-    <form id="reviewForm">
-      <div class="form-group">
-        <label for="reviewerName">Your Name *</label>
-        <input type="text" id="reviewerName" required>
-      </div>
-      <div class="form-group">
-        <label for="reviewRating">Rating *</label>
-        <select id="reviewRating" required>
-          <option value="">Select Rating</option>
-          <option value="5">★★★★★</option>
-          <option value="4">★★★★☆</option>
-          <option value="3">★★★☆☆</option>
-          <option value="2">★★☆☆☆</option>
-          <option value="1">★☆☆☆☆</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="reviewText">Your Review *</label>
-        <textarea id="reviewText" rows="5" required></textarea>
-      </div>
-      <button type="submit" class="btn submit-review">Submit Review</button>
-    </form>
-  </section>
+    <!-- Include cart.js -->
+    <script src="cart.js"></script>
+    <!-- Product JavaScript -->
+    <script>
+        // Function to get productId from URL parameters
+        function getProductIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('productId');
+        }
 
-  <!-- Link to external JavaScript -->
-  <script src="script.js"></script>
+        async function loadProductDetails() {
+            const productId = getProductIdFromURL();
+            if (!productId) {
+                alert('No product selected.');
+                window.location.href = 'products.html';
+                return;
+            }
+
+            try {
+                const backendUrl = 'https://testweb-github-io.onrender.com';
+
+                // Fetch product details
+                const response = await fetch(`${backendUrl}/products/${productId}`);
+                const product = await response.json();
+                if (response.ok) {
+                    // Update product details
+                    document.getElementById('product-name').textContent = product.name;
+                    document.getElementById('product-image').src = product.image || 'placeholder.jpg';
+                    document.getElementById('product-image').alt = product.name;
+                    document.getElementById('product-description').textContent = product.description;
+                    document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+
+                    // Display average rating
+                    displayRating(product.averageRating);
+                } else {
+                    alert(`Error loading product: ${product.error}`);
+                }
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                alert('An error occurred while loading the product details.');
+            }
+
+            // Add event listener for Add to Cart button
+            document.getElementById('addToCartButton').addEventListener('click', () => {
+                addToCart(productId);
+            });
+
+            // Add event listeners for rating stars
+            document.querySelectorAll('#rating-input .star').forEach(star => {
+                star.addEventListener('click', () => {
+                    submitRating(productId, star.dataset.value);
+                });
+            });
+        }
+
+        function displayRating(averageRating) {
+            const ratingDisplay = document.getElementById('rating-display');
+            ratingDisplay.innerHTML = '';
+            const fullStars = Math.floor(averageRating);
+            const halfStar = averageRating % 1 >= 0.5;
+
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    ratingDisplay.innerHTML += '&#9733;'; // Filled star
+                } else {
+                    ratingDisplay.innerHTML += '&#9734;'; // Empty star
+                }
+            }
+        }
+
+        async function submitRating(productId, rating) {
+            try {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    alert('Please log in to rate this product.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('https://testweb-github-io.onrender.com/ratings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-user-id': userId,
+                    },
+                    body: JSON.stringify({ productId, rating }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Thank you for rating!');
+                    // Optionally, reload product details to update average rating
+                    loadProductDetails();
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            } catch (error) {
+                console.error('Error submitting rating:', error);
+            }
+        }
+
+        // Load product details when the page loads
+        window.addEventListener('DOMContentLoaded', loadProductDetails);
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Footer content -->
+        <p>&copy; 2023 Your Company Name</p>
+    </footer>
 </body>
 </html>
