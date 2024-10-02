@@ -66,14 +66,24 @@ app.get('/products', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    res.json(product);
+
+    // Convert the Mongoose document to a plain JavaScript object
+    const productObj = product.toObject();
+
+    // Add averageRating to the product object
+    productObj.averageRating = product.averageRating;
+
+    res.json(productObj);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error fetching product:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // PUT /products/:id - Update a product by its ID
 app.put('/products/:id', async (req, res) => {
@@ -316,4 +326,38 @@ app.delete('/cart', isAuthenticated, async (req, res) => {
   }
 });
 
-// ... rest of your server code ...
+// Middleware to check authentication (using the same `isAuthenticated` middleware)
+
+app.post('/ratings', isAuthenticated, async (req, res) => {
+  try {
+    const { productId, rating } = req.body;
+
+    // Validate input
+    if (!productId || !rating) {
+      return res.status(400).json({ error: 'Product ID and rating are required' });
+    }
+
+    // Check if product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check if user has already rated the product
+    const existingRatingIndex = product.ratings.findIndex(r => r.userId.equals(req.user._id));
+    if (existingRatingIndex > -1) {
+      // Update existing rating
+      product.ratings[existingRatingIndex].rating = rating;
+    } else {
+      // Add new rating
+      product.ratings.push({ userId: req.user._id, rating });
+    }
+
+    await product.save();
+    res.json({ message: 'Rating submitted successfully' });
+  } catch (err) {
+    console.error('Error submitting rating:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
