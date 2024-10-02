@@ -23,19 +23,21 @@
 
   <!-- Navigation Bar -->
   <nav class="navbar">
-    <!-- (Same as in your `index.html` or main navigation bar) -->
-    <div class="logo">YourStore</div>
+    <div class="logo"><a href="index.html">YourStore</a></div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li class="dropdown">
         <a href="#">Shop</a>
         <ul class="dropdown-menu">
-          <li><a href="category.html">Electronics</a></li>
-          <!-- Add more categories if needed -->
+          <li><a href="category.html?category=Electronics">Electronics</a></li>
+          <li><a href="category.html?category=Clothing">Clothing</a></li>
+          <li><a href="category.html?category=Accessories">Accessories</a></li>
+          <!-- Add more categories as needed -->
         </ul>
       </li>
       <li><a href="#">Deals</a></li>
       <li><a href="#">Contact</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="register.html">Register</a></li>
     </ul>
     <!-- Search Bar -->
@@ -55,7 +57,7 @@
 
   <!-- Category Section -->
   <section class="category-section">
-    <h2>Category: Electronics</h2>
+    <h2>Category: <span id="categoryTitle">All</span></h2>
     <button class="filter-toggle">
       <i class="fas fa-filter"></i> Filters
     </button>
@@ -69,8 +71,8 @@
             <span class="toggle-filter"><i class="fas fa-chevron-down"></i></span>
           </div>
           <div class="filter-content">
-            <input type="range" id="priceRange" min="0" max="500" step="10" value="500">
-            <span id="priceValue">$0 - $500</span>
+            <input type="range" id="priceRange" min="0" max="1000" step="10" value="1000">
+            <span id="priceValue">$0 - $1000</span>
           </div>
         </div>
         <div class="filter-group">
@@ -78,10 +80,8 @@
             <h4>Brand</h4>
             <span class="toggle-filter"><i class="fas fa-chevron-down"></i></span>
           </div>
-          <div class="filter-content">
-            <label><input type="checkbox" name="brand" value="Brand A"> Brand A</label><br>
-            <label><input type="checkbox" name="brand" value="Brand B"> Brand B</label><br>
-            <label><input type="checkbox" name="brand" value="Brand C"> Brand C</label><br>
+          <div class="filter-content" id="brandFilters">
+            <!-- Brand checkboxes will be dynamically generated -->
           </div>
         </div>
         <div class="filter-group">
@@ -89,10 +89,8 @@
             <h4>Color</h4>
             <span class="toggle-filter"><i class="fas fa-chevron-down"></i></span>
           </div>
-          <div class="filter-content">
-            <label><input type="checkbox" name="color" value="Black"> Black</label><br>
-            <label><input type="checkbox" name="color" value="White"> White</label><br>
-            <label><input type="checkbox" name="color" value="Brown"> Brown</label><br>
+          <div class="filter-content" id="colorFilters">
+            <!-- Color checkboxes will be dynamically generated -->
           </div>
         </div>
         <button class="clear-filters">Clear Filters</button>
@@ -107,8 +105,31 @@
 
   <!-- Footer -->
   <footer>
-    <!-- (Same footer content as in your `index.html`) -->
-    <p>&copy; 2023 YourStore. All rights reserved.</p>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>YourStore</h3>
+        <p>Your one-stop shop for the latest trends.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">Deals</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Customer Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+    </div>
+    <p class="footer-bottom">&copy; 2024 YourStore. All rights reserved.</p>
   </footer>
 
   <!-- Link to external JavaScript -->
