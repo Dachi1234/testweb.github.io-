@@ -13,7 +13,7 @@ function getUserId() {
         return;
       }
   
-      const response = await fetch('https://your-backend-url/cart', {
+      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ function getUserId() {
         return;
       }
   
-      const response = await fetch('https://your-backend-url/cart', {
+      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
         method: 'GET',
         headers: {
           'x-user-id': userId,
@@ -109,7 +109,7 @@ function getUserId() {
   
     try {
       const userId = getUserId();
-      const response = await fetch('https://your-backend-url/cart', {
+      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ function getUserId() {
   
     try {
       const userId = getUserId();
-      const response = await fetch('https://your-backend-url/cart', {
+      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
