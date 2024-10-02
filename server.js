@@ -145,6 +145,7 @@ app.post('/register', async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Please enter all fields' });
     }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
@@ -154,7 +155,8 @@ app.post('/register', async (req, res) => {
     // Create new user
     const newUser = new User({ name, email, password });
     await newUser.save();
- res.status(201).json({ message: 'User registered successfully' });
+
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
     console.error('Registration Error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -190,4 +192,3 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
