@@ -15,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   
     try {
       // Send login data to the backend
-      const response = await fetch('/login', { // Relative path since frontend and backend are served together
+      const response = await fetch('https://testweb-github-io.onrender.com/login', { // Relative path since frontend and backend are served together
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
