@@ -155,9 +155,12 @@ if (document.getElementById('productsGrid')) {
     const maxPrice = parseFloat(priceRange.value);
 
     filteredProducts = products.filter(product => {
+      const productBrand = product.brand || '';
+      const productColor = product.color || '';
+
       return (
-        (selectedBrands.length === 0 || selectedBrands.includes(product.brand)) &&
-        (selectedColors.length === 0 || selectedColors.includes(product.color)) &&
+        (selectedBrands.length === 0 || selectedBrands.includes(productBrand)) &&
+        (selectedColors.length === 0 || selectedColors.includes(productColor)) &&
         product.price <= maxPrice
       );
     });
