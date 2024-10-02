@@ -2,22 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Register - YourStore</title>
+  <title>Login - YourStore</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Link to external CSS -->
-  <link rel="stylesheet" href="register.css">
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
 
-  <!-- Registration Form -->
-  <div class="registration-container">
-    <h2>Create an Account</h2>
-    <form id="registrationForm">
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" required>
-        <span class="error-message"></span>
-      </div>
+  <!-- Login Form -->
+  <div class="login-container">
+    <h2>Login to Your Account</h2>
+    <form id="loginForm">
       <div class="form-group">
         <label for="email">Email Address</label>
         <input type="email" id="email" name="email" required>
@@ -28,12 +23,12 @@
         <input type="password" id="password" name="password" required>
         <span class="error-message"></span>
       </div>
-      <button type="submit" class="btn">Register</button>
+      <button type="submit" class="btn">Login</button>
     </form>
-    <p>Already have an account? <a href="login.html">Login here</a>.</p>
+    <p>Don't have an account? <a href="register.html">Register here</a>.</p>
   </div>
 
   <!-- Link to external JavaScript -->
-  <script src="register.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>
