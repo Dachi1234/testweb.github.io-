@@ -83,8 +83,12 @@ if (document.getElementById('productsGrid')) {
   // Function to generate filter options based on fetched products
   function generateFilterOptions() {
     // Extract unique brands and colors from products
-    const brands = [...new Set(products.map(product => product.brand).filter(brand => brand))];
-    const colors = [...new Set(products.map(product => product.color).filter(color => color))];
+   const brands = [...new Set(products.map(product => product.brand).filter(brand => brand))];
+  const colors = [...new Set(products.map(product => product.color).filter(color => color))];
+
+  // Add console.log statements to output the brands and colors
+  console.log('Brands:', brands);
+  console.log('Colors:', colors);
 
     // Populate brand filters
     const brandFilterContainer = document.getElementById('brandFilters');
