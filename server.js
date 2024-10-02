@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
 const Product = require('./Product'); // Make sure this path is correct
-const cartRoutes = require('./cartRoutes'); // Adjust the path if necessary
+
 
 
 // Middleware to parse JSON bodies
@@ -14,7 +14,7 @@ app.use(express.json());
 // Use CORS middleware
 app.use(cors());
 
-app.use('/cart', cartRoutes);
+
 // Securely load your MongoDB URI from environment variables
 const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://dchperadze:iuRiYqYBf2v8gzde@cluster0.h10zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
