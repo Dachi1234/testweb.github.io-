@@ -1,6 +1,7 @@
 require('dotenv').config(); // Load environment variables
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
 const Product = require('./Product'); // Make sure this path is correct
@@ -106,3 +107,89 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+// User Schema and Model
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, trim: true, lowercase: true },
+  password: { type: String, required: true },
+});
+
+// Password hashing middleware
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (!user.isModified('password')) return next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    next();
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// Password comparison method
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
+
+
+// Registration Route
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Simple validation
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Please enter all fields' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists with that email' });
+    }
+
+    // Create new user
+    const newUser = new User({ name, email, password });
+    await newUser.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    console.error('Registration Error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Login Route
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Simple validation
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Please enter all fields' });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    // Compare passwords
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    // Successful login
+    res.status(200).json({ message: 'Login successful', userId: user._id });
+  } catch (err) {
+    console.error('Login Error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
