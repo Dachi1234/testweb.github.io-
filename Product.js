@@ -1,12 +1,12 @@
-// models/Product.js or in your server.js where the Product schema is defined
+// models/Product.js
+
+const mongoose = require('mongoose'); // Import mongoose
 
 const productSchema = new mongoose.Schema({
-  // Existing fields
   name: String,
   price: Number,
   description: String,
   image: String,
-  // New fields for ratings
   ratings: [
     {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -15,10 +15,17 @@ const productSchema = new mongoose.Schema({
   ],
 });
 
+// Virtual field for average rating
 productSchema.virtual('averageRating').get(function() {
   if (this.ratings.length === 0) return 0;
   const total = this.ratings.reduce((sum, r) => sum + r.rating, 0);
   return total / this.ratings.length;
 });
 
+// Ensure virtual fields are serialized
+productSchema.set('toObject', { virtuals: true });
+productSchema.set('toJSON', { virtuals: true });
+
 const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product; // Export the model
