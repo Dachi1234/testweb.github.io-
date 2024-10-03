@@ -1,5 +1,4 @@
 // product.js
-
 document.addEventListener('DOMContentLoaded', function() {
     // Extract the product ID from the URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,3 +33,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error fetching product details.');
         });
 });
+
