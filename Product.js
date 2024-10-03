@@ -1,36 +1,15 @@
-// product.js
-document.addEventListener('DOMContentLoaded', function() {
-    // Extract the product ID from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
+// models/Product.js
 
-    if (!productId) {
-        // No product ID in URL
-        alert('No product selected.');
-        return;
-    }
+const mongoose = require('mongoose');
 
-    // Use your backend URL
-    const backendUrl = 'https://testweb-github-io.onrender.com';
-
-    // Fetch product details from the backend
-    fetch(`${backendUrl}/products/${productId}`)
-        .then(response => response.json())
-        .then(product => {
-            if (product.error) {
-                alert('Product not found.');
-                return;
-            }
-
-            // Update the page with product details
-            document.getElementById('product-name').textContent = product.name;
-            document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
-            document.getElementById('product-description').textContent = product.description;
-            document.getElementById('product-image').src = product.image;
-        })
-        .catch(error => {
-            console.error('Error fetching product:', error);
-            alert('Error fetching product details.');
-        });
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: String,
+    price: { type: Number, required: true },
+    image: String,
+    category: String,
+    stock: { type: Number, default: 0 },
+    // Add other fields as needed
 });
 
+module.exports = mongoose.model('Product', productSchema);
