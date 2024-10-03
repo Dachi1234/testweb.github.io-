@@ -1,0 +1,170 @@
+/* dashboard.css */
+
+/* Dashboard Section */
+.dashboard-section {
+    padding: 80px 20px;
+    background-color: #f9f9f9;
+}
+
+.dashboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.dashboard-container h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.dashboard-container h1 span {
+    color: #ff6f61;
+}
+
+.loyalty-points-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loyalty-points-display {
+    margin-bottom: 30px;
+}
+
+.loyalty-points-display h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.points-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ff6f61;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    color: #fff;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.points-circle::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 5px solid #ff6f61;
+    z-index: -1;
+}
+
+.btn.redeem-btn {
+    padding: 12px 30px;
+    font-size: 18px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 50px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.redeem-btn:hover {
+    background-color: #555;
+}
+
+.points-progress {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #ff6f61;
+    width: 0%;
+    transition: width 0.5s;
+}
+
+.points-progress p {
+    font-size: 18px;
+}
+
+.points-progress p span {
+    font-weight: 700;
+    color: #ff6f61;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-container h1 {
+        font-size: 36px;
+    }
+
+    .loyalty-points-display h2 {
+        font-size: 28px;
+    }
+
+    .points-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 36px;
+    }
+
+    .points-circle::before {
+        width: 140px;
+        height: 140px;
+    }
+
+    .btn.redeem-btn {
+        font-size: 16px;
+        padding: 10px 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container h1 {
+        font-size: 28px;
+    }
+
+    .loyalty-points-display h2 {
+        font-size: 24px;
+    }
+
+    .points-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 28px;
+    }
+
+    .points-circle::before {
+        width: 120px;
+        height: 120px;
+    }
+
+    .btn.redeem-btn {
+        font-size: 14px;
+        padding: 8px 20px;
+    }
+
+    .points-progress p {
+        font-size: 16px;
+    }
+}
