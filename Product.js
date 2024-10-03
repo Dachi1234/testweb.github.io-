@@ -1,31 +1,36 @@
-// models/Product.js
+// product.js
 
-const mongoose = require('mongoose'); // Import mongoose
+document.addEventListener('DOMContentLoaded', function() {
+  // Extract the product ID from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id');
 
-const productSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  description: String,
-  image: String,
-  ratings: [
-    {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      rating: { type: Number, min: 1, max: 5 },
-    },
-  ],
+  if (!productId) {
+      // No product ID in URL
+      alert('No product selected.');
+      return;
+  }
+
+  // Use your backend URL
+  const backendUrl = 'https://testweb-github-io.onrender.com';
+
+  // Fetch product details from the backend
+  fetch(`${backendUrl}/products/${productId}`)
+      .then(response => response.json())
+      .then(product => {
+          if (product.error) {
+              alert('Product not found.');
+              return;
+          }
+
+          // Update the page with product details
+          document.getElementById('product-name').textContent = product.name;
+          document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+          document.getElementById('product-description').textContent = product.description;
+          document.getElementById('product-image').src = product.image;
+      })
+      .catch(error => {
+          console.error('Error fetching product:', error);
+          alert('Error fetching product details.');
+      });
 });
-
-// Virtual field for average rating
-productSchema.virtual('averageRating').get(function() {
-  if (this.ratings.length === 0) return 0;
-  const total = this.ratings.reduce((sum, r) => sum + r.rating, 0);
-  return total / this.ratings.length;
-});
-
-// Ensure virtual fields are serialized
-productSchema.set('toObject', { virtuals: true });
-productSchema.set('toJSON', { virtuals: true });
-
-const Product = mongoose.model('Product', productSchema);
-
-module.exports = Product; // Export the model
