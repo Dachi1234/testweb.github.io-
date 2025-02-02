@@ -1,357 +1,232 @@
-require('dotenv').config(); // Load environment variables
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const cors = require('cors');
-const app = express();
-const Product = require('./Product'); // Ensure this path is correct
+// Global variables
+let products = [];
+let productNames = [];
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Set your backend base URL (hosted on Render.com)
+const API_BASE_URL = 'https://testweb-github-io.onrender.com';
 
-// Use CORS middleware
-app.use(cors());
+// UI Elements
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const dropdownLink = document.querySelector('.nav-links .dropdown > a');
+const dropdownMenu = document.querySelector('.nav-links .dropdown-menu');
+const backToTop = document.querySelector('.back-to-top');
 
-// Securely load your MongoDB URI from environment variables
-const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://dchperadze:iuRiYqYBf2v8gzde@cluster0.h10zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// Hamburger Menu Toggle
+if (hamburger) {
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+  });
+}
 
-// Connect to MongoDB
-mongoose.connect(mongoURI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // Start the server only after successful connection
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server is listening on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Error connecting to MongoDB:', err);
+// Toggle Dropdown on Click (Mobile Devices)
+if (dropdownLink) {
+  dropdownLink.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      dropdownMenu.classList.toggle('active');
+    }
+  });
+}
+
+// Back to Top Button
+if (backToTop) {
+  window.addEventListener('scroll', () => {
+    backToTop.style.display = window.pageYOffset > 300 ? 'block' : 'none';
   });
 
-// Define your routes here
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
-// POST /products - Add a new product
-app.post('/products', async (req, res) => {
-  try {
-    const newProduct = new Product(req.body);
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+// Initialize Swiper for featured products
+function initializeSwiper() {
+  if (window.productSwiper) {
+    window.productSwiper.destroy();
   }
-});
+  window.productSwiper = new Swiper('.product-carousel', {
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 4 },
+    },
+  });
+}
 
-app.get('/products', async (req, res) => {
+// Fetch products from the backend API using the absolute URL
+async function fetchProducts() {
   try {
-    const filter = {};
-    if (req.query.category) {
-      filter.category = req.query.category;
-    }
-    // You can add more filters here (e.g., brand, price range)
-    const products = await Product.find(filter);
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    const response = await fetch(`${API_BASE_URL}/products`);
+    const data = await response.json();
+    products = data;
+    productNames = products.map(product => product.name);
 
-// GET /products/:id - Retrieve a product by its ID
-app.get('/products/:id', async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-
-    // Convert the Mongoose document to a plain JavaScript object
-    const productObj = product.toObject();
-
-    // Add averageRating to the product object
-    productObj.averageRating = product.averageRating;
-
-    res.json(productObj);
-  } catch (err) {
-    console.error('Error fetching product:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// PUT /products/:id - Update a product by its ID
-app.put('/products/:id', async (req, res) => {
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedProduct) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-    res.json(updatedProduct);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// DELETE /products/:id - Delete a product by its ID
-app.delete('/products/:id', async (req, res) => {
-  try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-    res.json({ message: 'Product deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
-
-// --- User Schema and Model with Cart Field ---
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, trim: true, lowercase: true },
-  password: { type: String, required: true },
-  // Added cart field: an array of cart items, each with productId and quantity
-  cart: {
-    type: [
-      {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        quantity: { type: Number, default: 1 }
-      }
-    ],
-    default: []
-  }
-});
-
-// Password hashing middleware
-userSchema.pre('save', async function (next) {
-  const user = this;
-  if (!user.isModified('password')) return next();
-  try {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    next();
-  } catch (err) {
-    return next(err);
-  }
-});
-
-// Password comparison method
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
-
-const User = mongoose.model('User', userSchema);
-
-// --- Registration Route ---
-app.post('/register', async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // Simple validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Please enter all fields' });
-    }
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists with that email' });
-    }
-
-    // Create new user
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (err) {
-    console.error('Registration Error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// --- Login Route ---
-app.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Simple validation
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Please enter all fields' });
-    }
-
-    // Find user by email
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-
-    // Compare passwords
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-
-    // Successful login
-    res.status(200).json({ message: 'Login successful', userId: user._id });
-  } catch (err) {
-    console.error('Login Error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// --- Authentication Middleware ---
-const isAuthenticated = async (req, res, next) => {
-  try {
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-    req.user = user;
-    next();
+    displayProducts(products);
+    displayFeaturedProducts(products);
+    initializeSearchBar();
+    initializeCategoryPage();
+    initializeProductPage();
   } catch (error) {
-    console.error('Authentication Error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Error fetching products:', error);
   }
-};
+}
 
-// --- Cart Routes ---
-// Add item to cart
-app.post('/cart', isAuthenticated, async (req, res) => {
-  try {
-    const { productId, quantity } = req.body;
+// Function to display all products
+function displayProducts(productsToDisplay) {
+  const container = document.getElementById('products-container');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  productsToDisplay.forEach(product => {
+    const productDiv = document.createElement('div');
+    productDiv.className = 'product-item';
+    productDiv.innerHTML = `
+      <img src="${product.image || 'placeholder-image.jpg'}" alt="${product.name}" />
+      <div class="product-item-content">
+        <h3>${product.name}</h3>
+        <p>$${product.price.toFixed(2)}</p>
+        <p>${product.description ? product.description.slice(0, 100) + '...' : 'No description available'}</p>
+        <a href="product.html?productId=${product._id}" class="btn">View Details</a>
+      </div>
+    `;
+    container.appendChild(productDiv);
+  });
+}
 
-    // Validate input
-    if (!productId || !quantity) {
-      return res.status(400).json({ error: 'Product ID and quantity are required' });
-    }
+// Function to display featured products
+function displayFeaturedProducts(products) {
+  const container = document.getElementById('featured-products-container');
+  if (!container) return;
 
-    // Check if product exists
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+  container.innerHTML = '';
+  const featuredProducts = products.slice(0, 8);
 
-    // Check if product already exists in cart
-    const cartItemIndex = req.user.cart.findIndex((item) => item.productId.equals(productId));
-    if (cartItemIndex > -1) {
-      // Update quantity
-      req.user.cart[cartItemIndex].quantity += quantity;
-    } else {
-      // Add new item
-      req.user.cart.push({ productId, quantity });
-    }
+  featuredProducts.forEach(product => {
+    const productCard = document.createElement('div');
+    productCard.className = 'swiper-slide product-card';
+    productCard.innerHTML = `
+      <img src="${product.image || 'placeholder-image.jpg'}" alt="${product.name}">
+      <div class="product-card-content">
+        <h3>${product.name}</h3>
+        <p>${product.description ? product.description.slice(0, 50) + '...' : 'No description available'}</p>
+        <div class="price">$${product.price.toFixed(2)}</div>
+        <a href="product.html?productId=${product._id}" class="btn">View Details</a>
+      </div>
+    `;
+    container.appendChild(productCard);
+  });
 
-    await req.user.save();
-    res.json({ message: 'Item added to cart' });
-  } catch (err) {
-    console.error('Error adding to cart:', err);
-    res.status(500).json({ error: 'Server error' });
+  initializeSwiper();
+}
+
+// Initialize Search Bar Functionality
+function initializeSearchBar() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      searchResults.innerHTML = '';
+      if (query) {
+        const matches = productNames.filter(name => 
+          name.toLowerCase().includes(query)
+        );
+        if (matches.length > 0) {
+          matches.forEach(match => {
+            const div = document.createElement('div');
+            div.textContent = match;
+            div.addEventListener('click', () => {
+              searchInput.value = match;
+              searchResults.style.display = 'none';
+              const matchedProduct = products.find(product => product.name === match);
+              if (matchedProduct) {
+                window.location.href = `product.html?productId=${matchedProduct._id}`;
+              }
+            });
+            searchResults.appendChild(div);
+          });
+          searchResults.style.display = 'block';
+        } else {
+          searchResults.style.display = 'none';
+        }
+      } else {
+        searchResults.style.display = 'none';
+      }
+    });
+
+    // Hide search results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
   }
+}
+
+// Initialize Category Page Functionality (if applicable)
+function initializeCategoryPage() {
+  if (document.getElementById('productsGrid')) {
+    // The category.js file handles its own functionality.
+  }
+}
+
+// Initialize Product Page Functionality (if applicable)
+function initializeProductPage() {
+  if (document.getElementById('productName')) {
+    // The product details page will load its own details.
+  }
+}
+
+// Initialize the page
+window.addEventListener('DOMContentLoaded', () => {
+  fetchProducts();
+  initializeBackToTopButton();
 });
 
-// View cart items
-app.get('/cart', isAuthenticated, async (req, res) => {
-  try {
-    await req.user.populate('cart.productId');
-    res.json(req.user.cart);
-  } catch (err) {
-    console.error('Error fetching cart:', err);
-    res.status(500).json({ error: 'Server error' });
+// Back to Top Button Functionality
+function initializeBackToTopButton() {
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTop.style.display = 'block';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+
+    backToTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
-});
+}
 
-// Update cart item quantity
-app.put('/cart', isAuthenticated, async (req, res) => {
-  try {
-    const { productId, quantity } = req.body;
+// Utility Functions
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}
 
-    if (!productId || quantity == null) {
-      return res.status(400).json({ error: 'Product ID and quantity are required' });
-    }
-
-    const cartItem = req.user.cart.find((item) => item.productId.equals(productId));
-    if (cartItem) {
-      cartItem.quantity = quantity;
-      await req.user.save();
-      res.json({ message: 'Cart updated' });
-    } else {
-      res.status(404).json({ error: 'Item not found in cart' });
-    }
-  } catch (err) {
-    console.error('Error updating cart:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Remove item from cart
-app.delete('/cart', isAuthenticated, async (req, res) => {
-  try {
-    const { productId } = req.body;
-
-    if (!productId) {
-      return res.status(400).json({ error: 'Product ID is required' });
-    }
-
-    const cartItemIndex = req.user.cart.findIndex((item) => item.productId.equals(productId));
-    if (cartItemIndex > -1) {
-      req.user.cart.splice(cartItemIndex, 1);
-      await req.user.save();
-      res.json({ message: 'Item removed from cart' });
-    } else {
-      res.status(404).json({ error: 'Item not found in cart' });
-    }
-  } catch (err) {
-    console.error('Error removing from cart:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// --- Ratings Endpoint ---
-app.post('/ratings', isAuthenticated, async (req, res) => {
-  try {
-    const { productId, rating } = req.body;
-
-    // Validate input
-    if (!productId || !rating) {
-      return res.status(400).json({ error: 'Product ID and rating are required' });
-    }
-
-    // Check if product exists
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-
-    // Check if user has already rated the product
-    const existingRatingIndex = product.ratings.findIndex(r => r.userId.equals(req.user._id));
-    if (existingRatingIndex > -1) {
-      // Update existing rating
-      product.ratings[existingRatingIndex].rating = rating;
-    } else {
-      // Add new rating
-      product.ratings.push({ userId: req.user._id, rating });
-    }
-
-    await product.save();
-    res.json({ message: 'Rating submitted successfully' });
-  } catch (err) {
-    console.error('Error submitting rating:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
+function handleApiError(error) {
+  console.error('API Error:', error);
+  alert('An error occurred. Please try again later.');
+}
