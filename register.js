@@ -1,5 +1,3 @@
-// register.js
-
 document.getElementById('registrationForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -9,14 +7,13 @@ document.getElementById('registrationForm').addEventListener('submit', async (e)
   const password = document.getElementById('password').value;
 
   try {
-    // Send registration data to the backend
-    const response = await fetch('https://testweb-github-io.onrender.com/register', {
-      method: 'POST', // Use the full backend URL
+    // Send registration data to the backend using a relative URL
+    const response = await fetch('/register', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
     });
 
-    // Handle the response
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
@@ -27,7 +24,6 @@ document.getElementById('registrationForm').addEventListener('submit', async (e)
         alert(`Error: ${data.error}`);
       }
     } else {
-      // Handle non-JSON response (e.g., HTML error page)
       const text = await response.text();
       console.error('Unexpected response:', text);
       alert('An unexpected error occurred. Please try again later.');
