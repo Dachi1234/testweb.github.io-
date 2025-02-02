@@ -1,5 +1,3 @@
-// login.js
-
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
   
@@ -14,8 +12,8 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
   
     try {
-      // Send login data to the backend
-      const response = await fetch('https://testweb-github-io.onrender.com/login', { // Relative path since frontend and backend are served together
+      // Send login data to the backend using a relative URL
+      const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -25,7 +23,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   
       if (response.ok) {
         alert('Login successful!');
-        // Store user data in localStorage or sessionStorage
+        // Store user data in localStorage
         localStorage.setItem('userId', data.userId);
         // Redirect to dashboard or home page
         window.location.href = 'dashboard.html';
@@ -37,4 +35,3 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       alert('An error occurred during login. Please try again later.');
     }
   });
-  
