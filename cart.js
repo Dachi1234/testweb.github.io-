@@ -1,10 +1,8 @@
-// cart.js
-
 function getUserId() {
     return localStorage.getItem('userId');
-  }
+}
   
-  async function addToCart(productId, quantity = 1) {
+async function addToCart(productId, quantity = 1) {
     try {
       const userId = getUserId();
       if (!userId) {
@@ -13,7 +11,7 @@ function getUserId() {
         return;
       }
   
-      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
+      const response = await fetch('/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,9 +29,9 @@ function getUserId() {
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
-  }
+}
   
-  async function loadCart() {
+async function loadCart() {
     try {
       const userId = getUserId();
       if (!userId) {
@@ -42,7 +40,7 @@ function getUserId() {
         return;
       }
   
-      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
+      const response = await fetch('/cart', {
         method: 'GET',
         headers: {
           'x-user-id': userId,
@@ -58,9 +56,9 @@ function getUserId() {
     } catch (error) {
       console.error('Error loading cart:', error);
     }
-  }
+}
   
-  function displayCartItems(cartItems) {
+function displayCartItems(cartItems) {
     const cartContainer = document.getElementById('cart-container');
     cartContainer.innerHTML = '';
   
@@ -86,7 +84,6 @@ function getUserId() {
       cartContainer.appendChild(cartItemDiv);
     });
   
-    // Add event listeners for quantity changes and remove buttons
     document.querySelectorAll('.quantity-input').forEach((input) => {
       input.addEventListener('change', updateCartItem);
     });
@@ -94,9 +91,9 @@ function getUserId() {
     document.querySelectorAll('.remove-item-btn').forEach((button) => {
       button.addEventListener('click', removeCartItem);
     });
-  }
+}
   
-  async function updateCartItem(event) {
+async function updateCartItem(event) {
     const input = event.target;
     const productId = input.dataset.productId;
     const quantity = parseInt(input.value);
@@ -109,7 +106,7 @@ function getUserId() {
   
     try {
       const userId = getUserId();
-      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
+      const response = await fetch('/cart', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,22 +117,22 @@ function getUserId() {
   
       const data = await response.json();
       if (response.ok) {
-        loadCart(); // Reload cart to update totals
+        loadCart();
       } else {
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
       console.error('Error updating cart:', error);
     }
-  }
+}
   
-  async function removeCartItem(event) {
+async function removeCartItem(event) {
     const button = event.target;
     const productId = button.dataset.productId;
   
     try {
       const userId = getUserId();
-      const response = await fetch('https://testweb-github-io.onrender.com/cart', {
+      const response = await fetch('/cart', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -146,12 +143,11 @@ function getUserId() {
   
       const data = await response.json();
       if (response.ok) {
-        loadCart(); // Reload cart to remove item
+        loadCart();
       } else {
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
       console.error('Error removing item from cart:', error);
     }
-  }
-  
+}
