@@ -1,6 +1,9 @@
 let products = []; // This will hold the fetched products
 let filteredProducts = []; // This will hold the filtered products
 
+// Set the backend base URL
+const API_BASE_URL = 'https://testweb-github-io.onrender.com';
+
 if (document.getElementById('productsGrid')) {
   const productsGrid = document.getElementById('productsGrid');
   const priceRange = document.getElementById('priceRange');
@@ -53,8 +56,8 @@ if (document.getElementById('productsGrid')) {
       const urlParams = new URLSearchParams(window.location.search);
       const category = urlParams.get('category') || 'All';
 
-      // Use relative URL for fetching products
-      const response = await fetch(`/products?category=${encodeURIComponent(category)}`);
+      // Use the absolute URL for fetching products
+      const response = await fetch(`${API_BASE_URL}/products?category=${encodeURIComponent(category)}`);
       products = await response.json();
 
       filteredProducts = products; // Initially display all fetched products
