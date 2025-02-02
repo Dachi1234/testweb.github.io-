@@ -1,154 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Product Details</title>
-    <link rel="stylesheet" href="product.css">
-    <link rel="stylesheet" href="common.css">
-    <!-- Include any additional CSS files -->
-</head>
-<body>
-    <!-- Navbar -->
-    <nav>
-        <!-- Navbar content -->
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="products.html">Products</a></li>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="login.html">Login</a></li>
-            <!-- Add more links as needed -->
-        </ul>
-    </nav>
+<script>
+    // Function to get productId from URL parameters
+    function getProductIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('productId');
+    }
 
-    <!-- Product Details Section -->
-    <div class="product-details">
-        <!-- Product Information -->
-        <h1 id="product-name">Product Name</h1>
-        <img id="product-image" src="placeholder.jpg" alt="Product Image">
-        <p id="product-description">Product description goes here.</p>
-        <p id="product-price">$0.00</p>
-
-        <!-- Rating System -->
-        <div class="product-rating">
-            <h3>Rating:</h3>
-            <div id="rating-display">
-                <!-- Stars will be displayed here -->
-            </div>
-            <div id="rating-input">
-                <h4>Rate this product:</h4>
-                <span class="star" data-value="1">&#9734;</span>
-                <span class="star" data-value="2">&#9734;</span>
-                <span class="star" data-value="3">&#9734;</span>
-                <span class="star" data-value="4">&#9734;</span>
-                <span class="star" data-value="5">&#9734;</span>
-            </div>
-        </div>
-
-        <!-- Add to Cart Button -->
-        <button id="addToCartButton">Add to Cart</button>
-    </div>
-
-    <!-- Inline Script -->
-    <script>
-        // Function to get productId from URL parameters
-        function getProductIdFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('productId');
+    async function loadProductDetails() {
+        const productId = getProductIdFromURL();
+        if (!productId) {
+            alert('No product selected.');
+            window.location.href = 'products.html';
+            return;
         }
 
-        async function loadProductDetails() {
-            const productId = getProductIdFromURL();
-            if (!productId) {
-                alert('No product selected.');
-                window.location.href = 'products.html';
+        try {
+            // Use the absolute URL for fetching product details
+            const response = await fetch(`https://testweb-github-io.onrender.com/products/${productId}`);
+            const product = await response.json();
+            if (response.ok) {
+                // Update product details
+                document.getElementById('product-name').textContent = product.name;
+                document.getElementById('product-image').src = product.image || 'placeholder.jpg';
+                document.getElementById('product-image').alt = product.name;
+                document.getElementById('product-description').textContent = product.description;
+                document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+
+                // Display average rating
+                displayRating(product.averageRating);
+            } else {
+                alert(`Error loading product: ${product.error}`);
+            }
+        } catch (error) {
+            console.error('Error loading product details:', error);
+            alert('An error occurred while loading the product details.');
+        }
+
+        // Add event listener for Add to Cart button
+        document.getElementById('addToCartButton').addEventListener('click', () => {
+            addToCart(productId);
+        });
+
+        // Add event listeners for rating stars
+        document.querySelectorAll('#rating-input .star').forEach(star => {
+            star.addEventListener('click', () => {
+                submitRating(productId, star.dataset.value);
+            });
+        });
+    }
+
+    function displayRating(averageRating) {
+        const ratingDisplay = document.getElementById('rating-display');
+        ratingDisplay.innerHTML = '';
+        const fullStars = Math.floor(averageRating);
+        for (let i = 1; i <= 5; i++) {
+            if (i <= fullStars) {
+                ratingDisplay.innerHTML += '&#9733;'; // Filled star
+            } else {
+                ratingDisplay.innerHTML += '&#9734;'; // Empty star
+            }
+        }
+    }
+
+    async function submitRating(productId, rating) {
+        try {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Please log in to rate this product.');
+                window.location.href = 'login.html';
                 return;
             }
 
-            try {
-                // Use relative URL for fetching product details
-                const response = await fetch(`/products/${productId}`);
-                const product = await response.json();
-                if (response.ok) {
-                    // Update product details
-                    document.getElementById('product-name').textContent = product.name;
-                    document.getElementById('product-image').src = product.image || 'placeholder.jpg';
-                    document.getElementById('product-image').alt = product.name;
-                    document.getElementById('product-description').textContent = product.description;
-                    document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
-
-                    // Display average rating
-                    displayRating(product.averageRating);
-                } else {
-                    alert(`Error loading product: ${product.error}`);
-                }
-            } catch (error) {
-                console.error('Error loading product details:', error);
-                alert('An error occurred while loading the product details.');
-            }
-
-            // Add event listener for Add to Cart button
-            document.getElementById('addToCartButton').addEventListener('click', () => {
-                addToCart(productId);
+            const response = await fetch('/ratings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-user-id': userId,
+                },
+                body: JSON.stringify({ productId, rating }),
             });
 
-            // Add event listeners for rating stars
-            document.querySelectorAll('#rating-input .star').forEach(star => {
-                star.addEventListener('click', () => {
-                    submitRating(productId, star.dataset.value);
-                });
-            });
-        }
-
-        function displayRating(averageRating) {
-            const ratingDisplay = document.getElementById('rating-display');
-            ratingDisplay.innerHTML = '';
-            const fullStars = Math.floor(averageRating);
-            for (let i = 1; i <= 5; i++) {
-                if (i <= fullStars) {
-                    ratingDisplay.innerHTML += '&#9733;'; // Filled star
-                } else {
-                    ratingDisplay.innerHTML += '&#9734;'; // Empty star
-                }
+            const data = await response.json();
+            if (response.ok) {
+                alert('Thank you for rating!');
+                loadProductDetails(); // Reload details to update rating
+            } else {
+                alert(`Error: ${data.error}`);
             }
+        } catch (error) {
+            console.error('Error submitting rating:', error);
         }
+    }
 
-        async function submitRating(productId, rating) {
-            try {
-                const userId = localStorage.getItem('userId');
-                if (!userId) {
-                    alert('Please log in to rate this product.');
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                const response = await fetch('/ratings', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-user-id': userId,
-                    },
-                    body: JSON.stringify({ productId, rating }),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Thank you for rating!');
-                    loadProductDetails(); // Reload details to update rating
-                } else {
-                    alert(`Error: ${data.error}`);
-                }
-            } catch (error) {
-                console.error('Error submitting rating:', error);
-            }
-        }
-
-        // Load product details when the page loads
-        window.addEventListener('DOMContentLoaded', loadProductDetails);
-    </script>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2023 Your Company Name</p>
-    </footer>
-</body>
-</html>
+    // Load product details when the page loads
+    window.addEventListener('DOMContentLoaded', loadProductDetails);
+</script>
