@@ -1,4 +1,3 @@
-<!-- product.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,12 +8,6 @@
     <!-- Include any additional CSS files -->
 </head>
 <body>
-
-
-
-    
-
-
     <!-- Navbar -->
     <nav>
         <!-- Navbar content -->
@@ -55,9 +48,7 @@
         <button id="addToCartButton">Add to Cart</button>
     </div>
 
-    <!-- Include cart.js -->
-    <script src="cart.js"></script>
-    <!-- Product JavaScript -->
+    <!-- Inline Script -->
     <script>
         // Function to get productId from URL parameters
         function getProductIdFromURL() {
@@ -74,10 +65,8 @@
             }
 
             try {
-                const backendUrl = 'https://testweb-github-io.onrender.com';
-
-                // Fetch product details
-                const response = await fetch(`${backendUrl}/products/${productId}`);
+                // Use relative URL for fetching product details
+                const response = await fetch(`/products/${productId}`);
                 const product = await response.json();
                 if (response.ok) {
                     // Update product details
@@ -114,8 +103,6 @@
             const ratingDisplay = document.getElementById('rating-display');
             ratingDisplay.innerHTML = '';
             const fullStars = Math.floor(averageRating);
-            const halfStar = averageRating % 1 >= 0.5;
-
             for (let i = 1; i <= 5; i++) {
                 if (i <= fullStars) {
                     ratingDisplay.innerHTML += '&#9733;'; // Filled star
@@ -134,7 +121,7 @@
                     return;
                 }
 
-                const response = await fetch('https://testweb-github-io.onrender.com/ratings', {
+                const response = await fetch('/ratings', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -146,8 +133,7 @@
                 const data = await response.json();
                 if (response.ok) {
                     alert('Thank you for rating!');
-                    // Optionally, reload product details to update average rating
-                    loadProductDetails();
+                    loadProductDetails(); // Reload details to update rating
                 } else {
                     alert(`Error: ${data.error}`);
                 }
@@ -162,7 +148,6 @@
 
     <!-- Footer -->
     <footer>
-        <!-- Footer content -->
         <p>&copy; 2023 Your Company Name</p>
     </footer>
 </body>
