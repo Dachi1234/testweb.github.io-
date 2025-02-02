@@ -4,16 +4,13 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
-const Product = require('./Product'); // Make sure this path is correct
-
-
+const Product = require('./Product'); // Ensure this path is correct
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
 // Use CORS middleware
 app.use(cors());
-
 
 // Securely load your MongoDB URI from environment variables
 const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://dchperadze:iuRiYqYBf2v8gzde@cluster0.h10zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
@@ -84,7 +81,6 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-
 // PUT /products/:id - Update a product by its ID
 app.put('/products/:id', async (req, res) => {
   try {
@@ -121,11 +117,21 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// User Schema and Model
+// --- User Schema and Model with Cart Field ---
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true, lowercase: true },
   password: { type: String, required: true },
+  // Added cart field: an array of cart items, each with productId and quantity
+  cart: {
+    type: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        quantity: { type: Number, default: 1 }
+      }
+    ],
+    default: []
+  }
 });
 
 // Password hashing middleware
@@ -148,8 +154,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 const User = mongoose.model('User', userSchema);
 
-
-// Registration Route
+// --- Registration Route ---
 app.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -176,7 +181,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Login Route
+// --- Login Route ---
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -206,15 +211,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-// server.js
-
-// ... existing code ...
-
-// Ensure express.json() middleware is included to parse JSON request bodies
-app.use(express.json());
-
-// Middleware to check authentication (simplified)
+// --- Authentication Middleware ---
 const isAuthenticated = async (req, res, next) => {
   try {
     const userId = req.headers['x-user-id'];
@@ -233,8 +230,7 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
-// Cart routes
-
+// --- Cart Routes ---
 // Add item to cart
 app.post('/cart', isAuthenticated, async (req, res) => {
   try {
@@ -326,8 +322,7 @@ app.delete('/cart', isAuthenticated, async (req, res) => {
   }
 });
 
-// Middleware to check authentication (using the same `isAuthenticated` middleware)
-
+// --- Ratings Endpoint ---
 app.post('/ratings', isAuthenticated, async (req, res) => {
   try {
     const { productId, rating } = req.body;
@@ -360,4 +355,3 @@ app.post('/ratings', isAuthenticated, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
